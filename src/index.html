@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/main.js" defer></script>
+    <script src="/showdown.min.js" defer></script>
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>MD Viewer</h1>
+
+      <form class="row" id="greet-form">
+        <input type="text" id="mdfile" placeholder="Open an MD file..." />
+        <button type="submit">Open</button>
+      </form>
+      <p id="debug"></p>
+      <p id="filedata"></p>
+      <div id="markdown"></div>
+      <div id="moreinfo"></div>
+    </main>
+  </body>
+</html>
