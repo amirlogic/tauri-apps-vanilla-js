@@ -3,14 +3,15 @@
 
 use std::fs::File;
 use std::io::{self, Read};
-use tauri::State;
+//use tauri::State;
 //use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
 #[tauri::command]
 fn read_markdown_file(filename: &str) -> Result<String, String> {
     let mut file = File::open(filename).map_err(|e| e.to_string())?;
     let mut contents = String::new();
-    file.read_to_string(&mut contents).map_err(|e| e.to_string())?;
+    file.read_to_string(&mut contents)
+        .map_err(|e| e.to_string())?;
     Ok(contents)
 }
 
@@ -29,6 +30,9 @@ fn get_os() -> String {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_store::Builder::new().build())
+        .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![read_markdown_file, get_os])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

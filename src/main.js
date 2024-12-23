@@ -1,5 +1,7 @@
 const { invoke } = window.__TAURI__.core;
 const { event, window: tauriWindow, path } = window.__TAURI__;
+const { open, message } = window.__TAURI__.dialog;
+//const { message } = require('@tauri-apps/plugin-dialog')
 
 let greetInputEl;
 let greetMsgEl;
@@ -7,6 +9,25 @@ let greetMsgEl;
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
   greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value });
+}
+
+async function openMD() {
+
+  try{
+
+    //const file = await open("README.md", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
+
+    //document.getElementById('markdown').innerHTML = html
+
+    document.getElementById('debug').textContent = await path.appDataDir()
+
+    
+
+  }
+  catch(err){
+
+    document.getElementById('debug').textContent = `${err}`
+  }
 }
 
 async function viewMD() {
@@ -30,7 +51,12 @@ async function viewMD() {
   }
 }
 
+async function testDialog(){
 
+  await message('Just a test', { title: 'Tauri', kind: 'info' });
+
+  //await invoke('plugin:dialog|open',{})
+}
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -38,6 +64,13 @@ window.addEventListener("DOMContentLoaded", () => {
   greetMsgEl = document.querySelector("#greet-msg");
   
   //document.getElementById('moreinfo').innerHTML = JSON.stringify(window)
+  openMD()
+
+  document.getElementById('testdialog').addEventListener("click", (e) => {
+
+    testDialog()
+
+  })
 
   document.getElementById('mdfile').addEventListener("change", (e) => {
 
@@ -48,6 +81,7 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     //greet();
     viewMD()
+    //openMD()
     
   });
 });
