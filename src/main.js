@@ -15,13 +15,22 @@ async function openMD() {
 
   try{
 
-    //const file = await open("README.md", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
+    const filename = await open({
+      multiple: false,
+      directory: false,
+    });
 
-    //document.getElementById('markdown').innerHTML = html
+    let mdcontent = await invoke("read_markdown_file", { filename: filename })
+
+    const converter = new showdown.Converter(),
+      
+      html      = converter.makeHtml(mdcontent);
+
+    document.getElementById('markdown').innerHTML = html
 
     document.getElementById('debug').textContent = await path.appDataDir()
 
-    
+    document.getElementById('moreinfo').textContent = filename
 
   }
   catch(err){
@@ -54,8 +63,6 @@ async function viewMD() {
 async function testDialog(){
 
   await message('Just a test', { title: 'Tauri', kind: 'info' });
-
-  //await invoke('plugin:dialog|open',{})
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -64,12 +71,12 @@ window.addEventListener("DOMContentLoaded", () => {
   greetMsgEl = document.querySelector("#greet-msg");
   
   //document.getElementById('moreinfo').innerHTML = JSON.stringify(window)
-  openMD()
+  //openMD()
 
   document.getElementById('testdialog').addEventListener("click", (e) => {
 
-    testDialog()
-
+    //testDialog()
+    openMD()
   })
 
   document.getElementById('mdfile').addEventListener("change", (e) => {
@@ -81,7 +88,7 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     //greet();
     viewMD()
-    //openMD()
+    
     
   });
 });
