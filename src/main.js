@@ -1,7 +1,7 @@
 const { invoke } = window.__TAURI__.core;
-const { event, window: tauriWindow, path } = window.__TAURI__;
+const { exists, BaseDirectory, readTextFile } = window.__TAURI__.fs;
 const { open, message } = window.__TAURI__.dialog;
-//const { message } = require('@tauri-apps/plugin-dialog')
+
 
 let greetInputEl;
 let greetMsgEl;
@@ -20,7 +20,7 @@ async function openMD() {
       directory: false,
     });
 
-    let mdcontent = await invoke("read_markdown_file", { filename: filename })
+    const mdcontent = await readTextFile(filename)
 
     const converter = new showdown.Converter(),
       
@@ -28,7 +28,7 @@ async function openMD() {
 
     document.getElementById('markdown').innerHTML = html
 
-    document.getElementById('debug').textContent = await path.appDataDir()
+    //document.getElementById('debug').textContent = await path.appDataDir()
 
     document.getElementById('moreinfo').textContent = filename
 
