@@ -20,11 +20,11 @@ async function openMD() {
       directory: false,
     });
 
-    const mdcontent = await readTextFile(filename)
+    let mdcontent = await readTextFile(filename)
 
-    const converter = new showdown.Converter(),
+    //const converter = new showdown.Converter(),
       
-      html      = converter.makeHtml(mdcontent);
+    let html = marked.parse(mdcontent);
 
     document.getElementById('markdown').innerHTML = html
 
