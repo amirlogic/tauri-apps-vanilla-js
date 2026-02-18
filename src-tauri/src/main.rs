@@ -41,7 +41,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![read_markdown_file, get_os])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-    tauri2_lib::run();
+    /*tauri2_lib::run();*/
 }
 
 /* use std::fs::File;
