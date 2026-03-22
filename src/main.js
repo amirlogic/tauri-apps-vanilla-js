@@ -243,7 +243,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const fileMenu = await Submenu.new({
         text: 'File',
-        icon: 'folder',
         items: [
           await MenuItem.new({
             id: 'open',
