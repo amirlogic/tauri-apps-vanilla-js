@@ -1,5 +1,6 @@
 const { invoke } = window.__TAURI__.core;
 const { exists, readTextFile, readFile } = window.__TAURI__.fs;
+const { getVersion } = window.__TAURI__.app
 const { join, dirname, extname } = window.__TAURI__.path;
 const { Menu, MenuItem, Submenu } = window.__TAURI__.menu;
 
@@ -209,7 +210,7 @@ window.addEventListener("DOMContentLoaded", () => {
             text: 'About',
             action: async () => {
               await message(
-                `Created by Amir Hachaichi\nUses marked\ngithub.com/amirlogic/tauri-apps-vanilla-js`,
+                `Markdown Viewer v${appVersion}\nCreated by Amir Hachaichi\nUses Marked\ngithub.com/amirlogic/tauri-markdown-viewer`,
                 { title: 'About', kind: 'info' }
               );
             },
