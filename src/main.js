@@ -1,6 +1,6 @@
 const { invoke } = window.__TAURI__.core;
 const { exists, readTextFile, readFile } = window.__TAURI__.fs;
-const { getVersion } = window.__TAURI__.app
+const { getVersion } = window.__TAURI__.app;
 const { join, dirname, extname } = window.__TAURI__.path;
 const { Menu, MenuItem, Submenu } = window.__TAURI__.menu;
 
@@ -141,6 +141,11 @@ async function openMD() {
 // ---------------- INIT ----------------
 window.addEventListener("DOMContentLoaded", () => {
 
+  // ---- HANDLE INITIAL THEME (User choice or System preference) ----
+  const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  document.documentElement.setAttribute('data-bs-theme', savedTheme);
+
   (async ()=>{
     try{
       const fileMenu = await Submenu.new({
@@ -184,6 +189,30 @@ window.addEventListener("DOMContentLoaded", () => {
         ]
       });
 
+      const viewMenu = await Submenu.new({
+        text: 'View',
+        items: [
+          await MenuItem.new({
+            id: 'lighttheme',
+            text: 'Light Theme',
+            action: () => {
+              document.documentElement.setAttribute('data-theme', 'light');
+              document.documentElement.setAttribute('data-bs-theme', 'light');
+              localStorage.setItem('theme', 'light');
+            },
+          }),
+          await MenuItem.new({
+            id: 'darktheme',
+            text: 'Dark Theme',
+            action: () => {
+              document.documentElement.setAttribute('data-theme', 'dark');
+              document.documentElement.setAttribute('data-bs-theme', 'dark');
+              localStorage.setItem('theme', 'dark');
+            },
+          }),
+        ]
+      });
+
       // -------- NEW RECENT MENU --------
       const recent_menu = {
         id: 'recent',
@@ -201,6 +230,10 @@ window.addEventListener("DOMContentLoaded", () => {
           { id: 'r9', text:'-', action:()=> loadMD(history[9]) },
         ]
       };
+
+      // Get app version for the About dialog
+      let appVersion = "1.0.0";
+      try { appVersion = await getVersion(); } catch(e) {}
 
       const helpMenu = await Submenu.new({
         text: 'Help',
@@ -221,6 +254,7 @@ window.addEventListener("DOMContentLoaded", () => {
       menu = await Menu.new({
         items: [
           fileMenu,
+          viewMenu,
           recent_menu,
           helpMenu
         ],
