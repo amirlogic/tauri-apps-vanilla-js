@@ -228,22 +228,22 @@ window.addEventListener("DOMContentLoaded", () => {
       });
 
       // -------- NEW RECENT MENU --------
-      const recent_menu = {
+      const recentMenu = await Submenu.new({
         id: 'recent',
         text: 'Recent',
         items: [
-          { id: 'r0', text:'-', action:()=> loadMD(history[0]) },
-          { id: 'r1', text:'-', action:()=> loadMD(history[1]) },
-          { id: 'r2', text:'-', action:()=> loadMD(history[2]) },
-          { id: 'r3', text:'-', action:()=> loadMD(history[3]) },
-          { id: 'r4', text:'-', action:()=> loadMD(history[4]) },
-          { id: 'r5', text:'-', action:()=> loadMD(history[5]) },
-          { id: 'r6', text:'-', action:()=> loadMD(history[6]) },
-          { id: 'r7', text:'-', action:()=> loadMD(history[7]) },
-          { id: 'r8', text:'-', action:()=> loadMD(history[8]) },
-          { id: 'r9', text:'-', action:()=> loadMD(history[9]) },
+          await MenuItem.new({ id: 'r0', text: '-', action: () => loadMD(history[0]) }),
+          await MenuItem.new({ id: 'r1', text: '-', action: () => loadMD(history[1]) }),
+          await MenuItem.new({ id: 'r2', text: '-', action: () => loadMD(history[2]) }),
+          await MenuItem.new({ id: 'r3', text: '-', action: () => loadMD(history[3]) }),
+          await MenuItem.new({ id: 'r4', text: '-', action: () => loadMD(history[4]) }),
+          await MenuItem.new({ id: 'r5', text: '-', action: () => loadMD(history[5]) }),
+          await MenuItem.new({ id: 'r6', text: '-', action: () => loadMD(history[6]) }),
+          await MenuItem.new({ id: 'r7', text: '-', action: () => loadMD(history[7]) }),
+          await MenuItem.new({ id: 'r8', text: '-', action: () => loadMD(history[8]) }),
+          await MenuItem.new({ id: 'r9', text: '-', action: () => loadMD(history[9]) }),
         ]
-      };
+      });
 
       // Get app version for the About dialog
       let appVersion = "1.0.0";
