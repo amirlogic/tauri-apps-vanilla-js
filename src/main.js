@@ -85,40 +85,54 @@ async function loadMD(fname) {
     const imgs = document.querySelectorAll("img");
 
     imgs.forEach(async (img) => {
-      try{
+      try {
         const url = new URL(img.src);
-
-        if(url.host === "127.0.0.1:1430" || url.host === "tauri.localhost"){
-          const localimg = await join(filedir, decodeURI(url.pathname));
+    
+        let localimg = null;
+    
+        //  CASE 1: file:///C:/...
+        if (url.protocol === "file:") {
+          // Convert file URL → Windows path
+          localimg = decodeURI(url.pathname);
+    
+          // Remove leading slash on Windows (/C:/...)
+          if (localimg.startsWith("/")) {
+            localimg = localimg.slice(1);
+          }
+        }
+    
+        //  CASE 2: relative images (your existing logic)
+        else if (
+          url.host === "127.0.0.1:1430" ||
+          url.host === "tauri.localhost"
+        ) {
+          localimg = await join(filedir, decodeURI(url.pathname));
+        }
+    
+        if (localimg) {
           const fileExists = await exists(localimg);
-
-          if(fileExists){
+    
+          if (fileExists) {
             const imgbytes = await readFile(localimg);
-
+    
             const base64String = btoa(
               Array.from(imgbytes)
                 .map(byte => String.fromCharCode(byte))
                 .join('')
             );
-
-            const imgext = await extname(localimg);
+    
+            const imgext = (await extname(localimg)).replace('.', '');
+    
             img.src = `data:image/${imgext};base64,${base64String}`;
           } else {
             img.alt = "Image NOT found!";
           }
-        } else {
-          img.alt = url;
         }
-      }
-      catch(err){
+    
+      } catch (err) {
         errorMessage(err);
       }
-    });
-  }
-  catch(err){
-    errorMessage(err);
-  }
-}
+  });
 
 // ---------------- OPEN FILE ----------------
 async function openMD() {
