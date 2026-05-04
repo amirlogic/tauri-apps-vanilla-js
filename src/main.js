@@ -89,8 +89,7 @@ async function loadMD(fname) {
         const url = new URL(img.src);
 
         if(url.protocol == 'file:'){
-
-            //const localimg = await join(filedir, decodeURI(url.src));
+          
             let filePath = decodeURI(url.pathname);
 
             // Fix Windows paths (remove leading slash before drive letter)
@@ -98,10 +97,10 @@ async function loadMD(fname) {
               filePath = filePath.slice(1);
             }
           
-            const fileExists = await exists(filePath);  // localimg
+            const fileExists = await exists(filePath);
   
             if(fileExists){
-              const imgbytes = await readFile(localimg);
+              const imgbytes = await readFile(filePath);
   
               const base64String = btoa(
                 Array.from(imgbytes)
