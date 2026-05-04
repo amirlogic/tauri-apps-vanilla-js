@@ -109,7 +109,7 @@ async function loadMD(fname) {
                   .join('')
               );
   
-              const imgext = await extname(localimg);
+              const imgext = await extname(filePath);
               img.src = `data:image/${imgext};base64,${base64String}`;
             } else {
               img.alt = "Image NOT found!";
