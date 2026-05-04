@@ -111,8 +111,41 @@ async function loadMD(fname) {
   
               const imgext = await extname(filePath);
               img.src = `data:image/${imgext};base64,${base64String}`;
+              
             } else {
-              img.alt = "Image NOT found!";
+
+                try {
+                  const fullPath = decodeURI(url.pathname);
+                
+                  // Extract filename (cross-platform)
+                  const fileName = fullPath.split('/').pop();
+                
+                  if (!fileName) {
+                    img.alt = "Image NOT found!";
+                    //return;
+                  }
+                
+                  const fallbackPath = await join(filedir, fileName);
+                  const fallbackExists = await exists(fallbackPath);
+                
+                  if (fallbackExists) {
+                    const imgbytes = await readFile(fallbackPath);
+                
+                    const base64String = btoa(
+                      Array.from(imgbytes)
+                        .map(byte => String.fromCharCode(byte))
+                        .join('')
+                    );
+                
+                    const imgext = await extname(fallbackPath);
+                    img.src = `data:image/${imgext};base64,${base64String}`;
+                  } else {
+                    img.alt = "Image NOT found!";
+                  }
+                } catch (err) {
+                  img.alt = "Image NOT found!";
+                }
+              
             }
         }
         else if(url.protocol.includes('http')){
