@@ -91,7 +91,7 @@ async function loadMD(fname) {
         if(url.protocol == 'file:'){
 
             //const localimg = await join(filedir, decodeURI(url.src));
-            const fileExists = await exists(url.src.replace('file:///',''));  // localimg
+            const fileExists = await exists(img.src.replace('file:///',''));  // localimg
   
             if(fileExists){
               const imgbytes = await readFile(localimg);
