@@ -85,54 +85,64 @@ async function loadMD(fname) {
     const imgs = document.querySelectorAll("img");
 
     imgs.forEach(async (img) => {
-      try {
+      try{
         const url = new URL(img.src);
-    
-        let localimg = null;
-    
-        //  CASE 1: file:///C:/...
-        if (url.protocol === "file:") {
-          // Convert file URL → Windows path
-          localimg = decodeURI(url.pathname);
-    
-          // Remove leading slash on Windows (/C:/...)
-          if (localimg.startsWith("/")) {
-            localimg = localimg.slice(1);
-          }
+
+        if(url.protocol == 'file:'){
+
+            //const localimg = await join(filedir, decodeURI(url.src));
+            const fileExists = await exists(url.src);  // localimg
+  
+            if(fileExists){
+              const imgbytes = await readFile(localimg);
+  
+              const base64String = btoa(
+                Array.from(imgbytes)
+                  .map(byte => String.fromCharCode(byte))
+                  .join('')
+              );
+  
+              const imgext = await extname(localimg);
+              img.src = `data:image/${imgext};base64,${base64String}`;
+            } else {
+              img.alt = "Image NOT found!";
+            }
         }
-    
-        //  CASE 2: relative images (your existing logic)
-        else if (
-          url.host === "127.0.0.1:1430" ||
-          url.host === "tauri.localhost"
-        ) {
-          localimg = await join(filedir, decodeURI(url.pathname));
-        }
-    
-        if (localimg) {
-          const fileExists = await exists(localimg);
-    
-          if (fileExists) {
-            const imgbytes = await readFile(localimg);
-    
-            const base64String = btoa(
-              Array.from(imgbytes)
-                .map(byte => String.fromCharCode(byte))
-                .join('')
-            );
-    
-            const imgext = (await extname(localimg)).replace('.', '');
-    
-            img.src = `data:image/${imgext};base64,${base64String}`;
+        else if(url.protocol.includes('http')){
+
+          if(url.host === "127.0.0.1:1430" || url.host === "tauri.localhost"){
+            const localimg = await join(filedir, decodeURI(url.pathname));
+            const fileExists = await exists(localimg);
+  
+            if(fileExists){
+              const imgbytes = await readFile(localimg);
+  
+              const base64String = btoa(
+                Array.from(imgbytes)
+                  .map(byte => String.fromCharCode(byte))
+                  .join('')
+              );
+  
+              const imgext = await extname(localimg);
+              img.src = `data:image/${imgext};base64,${base64String}`;
+            } else {
+              img.alt = "Image NOT found!";
+            }
           } else {
-            img.alt = "Image NOT found!";
+            img.alt = url;
           }
         }
     
-      } catch (err) {
+      }
+      catch(err){
         errorMessage(err);
       }
-  });
+    });
+  }
+  catch(err){
+    errorMessage(err);
+  }
+}
 
 // ---------------- OPEN FILE ----------------
 async function openMD() {
@@ -228,22 +238,22 @@ window.addEventListener("DOMContentLoaded", () => {
       });
 
       // -------- NEW RECENT MENU --------
-      const recentMenu = await Submenu.new({
+      const recent_menu = {
         id: 'recent',
         text: 'Recent',
         items: [
-          await MenuItem.new({ id: 'r0', text: '-', action: () => loadMD(history[0]) }),
-          await MenuItem.new({ id: 'r1', text: '-', action: () => loadMD(history[1]) }),
-          await MenuItem.new({ id: 'r2', text: '-', action: () => loadMD(history[2]) }),
-          await MenuItem.new({ id: 'r3', text: '-', action: () => loadMD(history[3]) }),
-          await MenuItem.new({ id: 'r4', text: '-', action: () => loadMD(history[4]) }),
-          await MenuItem.new({ id: 'r5', text: '-', action: () => loadMD(history[5]) }),
-          await MenuItem.new({ id: 'r6', text: '-', action: () => loadMD(history[6]) }),
-          await MenuItem.new({ id: 'r7', text: '-', action: () => loadMD(history[7]) }),
-          await MenuItem.new({ id: 'r8', text: '-', action: () => loadMD(history[8]) }),
-          await MenuItem.new({ id: 'r9', text: '-', action: () => loadMD(history[9]) }),
+          { id: 'r0', text:'-', action:()=> loadMD(history[0]) },
+          { id: 'r1', text:'-', action:()=> loadMD(history[1]) },
+          { id: 'r2', text:'-', action:()=> loadMD(history[2]) },
+          { id: 'r3', text:'-', action:()=> loadMD(history[3]) },
+          { id: 'r4', text:'-', action:()=> loadMD(history[4]) },
+          { id: 'r5', text:'-', action:()=> loadMD(history[5]) },
+          { id: 'r6', text:'-', action:()=> loadMD(history[6]) },
+          { id: 'r7', text:'-', action:()=> loadMD(history[7]) },
+          { id: 'r8', text:'-', action:()=> loadMD(history[8]) },
+          { id: 'r9', text:'-', action:()=> loadMD(history[9]) },
         ]
-      });
+      };
 
       // Get app version for the About dialog
       let appVersion = "1.0.0";
