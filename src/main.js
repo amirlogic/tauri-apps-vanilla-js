@@ -91,7 +91,14 @@ async function loadMD(fname) {
         if(url.protocol == 'file:'){
 
             //const localimg = await join(filedir, decodeURI(url.src));
-            const fileExists = await exists(img.src.replace('file:///',''));  // localimg
+            let filePath = decodeURI(url.pathname);
+
+            // Fix Windows paths (remove leading slash before drive letter)
+            if (/^\/[A-Za-z]:/.test(filePath)) {
+              filePath = filePath.slice(1);
+            }
+          
+            const fileExists = await exists(filePath);  // localimg
   
             if(fileExists){
               const imgbytes = await readFile(localimg);
